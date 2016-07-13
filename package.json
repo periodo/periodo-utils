@@ -1,6 +1,6 @@
 {
   "name": "periodo-utils",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Utilities for working with PeriodO data.",
   "main": "src/index.js",
   "scripts": {
