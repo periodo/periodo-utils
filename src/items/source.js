@@ -3,7 +3,7 @@
 const Immutable = require('immutable')
 
 function getDisplayTitle(source) {
-  const { formatContributorList } = require('./contributor_collection')
+  const { formatContributorList } = require('./contributor_seq')
       , creators = formatContributorList(getCreators(source))
       , year = getYearPublished(source)
       , title = getTitle(source)

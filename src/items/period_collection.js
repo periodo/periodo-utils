@@ -3,7 +3,7 @@
 const Immutable = require('immutable')
 
 function describe(periodization) {
-  const { minYear, maxYear } = require('./terminus_collection')
+  const { minYear, maxYear } = require('./terminus_seq')
       , definitions = periodization.get('definitions')
       , starts = definitions.map(def => def.get('start', Immutable.Map()))
       , stops = definitions.map(def => def.get('stop', Immutable.Map()))

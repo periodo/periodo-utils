@@ -32,10 +32,10 @@ test('Period terminus helpers', t => {
 });
 
 
-test('Period terminus collection helpers', t => {
+test('Period terminus sequence helpers', t => {
   t.plan(2);
 
-  const helpers = require('../items/terminus_collection');
+  const helpers = require('../items/terminus_seq');
   const termini = Immutable.fromJS(require('./fixtures/termini.json'));
 
   t.deepEqual(
@@ -53,10 +53,10 @@ test('Period terminus collection helpers', t => {
 });
 
 
-test('Periodization helpers', t => {
+test('Period collection helpers', t => {
   t.plan(1);
 
-  const helpers = require('../items/periodization');
+  const helpers = require('../items/period_collection');
   const data = Immutable.fromJS(require('./fixtures/period-collection.json'));
 
   t.deepEqual(helpers.describe(data.getIn(['periodCollections', 'p03377f'])), {
@@ -71,14 +71,14 @@ test('Periodization helpers', t => {
       iso: -205,
       label: '206 B.C.'
     }
-  }, 'should describe a periodization');
+  }, 'should describe a period collection');
 });
 
 
-test('Periodization collection helpers', t => {
+test('Period collection sequence helpers', t => {
   t.plan(1);
 
-  const helpers = require('../items/periodization_collection');
+  const helpers = require('../items/period_collection_seq');
 
   const data = Immutable.fromJS([
     { definitions: [ { spatialCoverageDescription: 'Middle East', spatialCoverage: [ 'a' ] }]},
