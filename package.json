@@ -4,6 +4,7 @@
   "version": "4.0.0",
   "description": "Utilities for working with PeriodO data.",
   "scripts": {
+    "repl": "node repl.js",
     "test": "tape ./tests/*.js",
     "build": "babel src --out-dir lib",
     "prepublish": "npm build"
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "immutable": "^3.8.1",
-    "pegjs": "^0.9.0"
+    "pegjs": "^0.9.0",
+    "simple-get": "^2.2.2"
   }
 }
