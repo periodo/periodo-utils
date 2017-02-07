@@ -3,6 +3,7 @@
 const Immutable = require('immutable')
     , parseDate = require('../dates/parse')
 
+
 function oneOf(...candidates) {
   for (let i = 0; i < candidates.length; i++) {
     if (candidates[i] !== undefined) {
@@ -11,6 +12,8 @@ function oneOf(...candidates) {
   }
 }
 
+
+// Terminus -> String
 function asString(terminus) {
   if (terminus.hasIn(['in', 'earliestYear']) || terminus.hasIn(['in', 'latestYear'])) {
     let earliest = getEarliestYear(terminus)
@@ -27,6 +30,7 @@ function asString(terminus) {
   }
 }
 
+// Terminus -> Int or Null
 function getEarliestYear(terminus) {
   let year
 
@@ -41,6 +45,7 @@ function getEarliestYear(terminus) {
   return year === null ? null : parseInt(year);
 }
 
+// Terminus -> Int or Null
 function getLatestYear(terminus) {
   let year
 
@@ -55,10 +60,12 @@ function getLatestYear(terminus) {
   return year === null ? null : parseInt(year);
 }
 
+// Terminus -> Bool
 function hasISOValue(terminus) {
   return (getEarliestYear(terminus) !== null || getLatestYear(terminus) !== null)
 }
 
+// Terminus -> Bool
 function wasAutoparsed(terminus) {
   // This was checking if the terminus is blank. If it was, it would return
   // that it's autoparsed- that's probably not the best thing to do.

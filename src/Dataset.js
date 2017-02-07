@@ -88,6 +88,8 @@ function makeSource(source) {
 module.exports = function makeDataset(data) {
   if (typeof data === 'string') {
     data = JSON.parse(data);
+  } else if (Immutable.Map.isMap(data)) {
+    data = data.toJS();
   }
 
   return Immutable.List().withMutations(collectionList => {

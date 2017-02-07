@@ -3,6 +3,7 @@
 const Immutable = require('immutable')
 
 
+// Period -> String
 function getOriginalLabel(period) {
   if (!period.get('label') || !period.get('language')) return null;
 
@@ -13,6 +14,7 @@ function getOriginalLabel(period) {
 }
 
 
+// Period -> OrderedSet<String>
 function getAllLabels(period) {
   return Immutable.OrderedSet().withMutations(alternateLabels => {
     period
@@ -27,6 +29,7 @@ function getAllLabels(period) {
 }
 
 
+// Period -> OrderedSet<String>
 function getAlternateLabels(period) {
   return getAllLabels(period).remove(getOriginalLabel(period))
 }

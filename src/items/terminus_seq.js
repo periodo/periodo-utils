@@ -2,6 +2,7 @@
 
 const { getEarliestYear, getLatestYear } = require('./terminus')
 
+// Iterable<Terminus> -> Object({ label: String, iso: Int }) or Null
 function maxYear(termini) {
   const latest = termini.maxBy(getLatestYear) || null
 
@@ -11,6 +12,7 @@ function maxYear(termini) {
   }
 }
 
+// Iterable<Terminus> -> Object({ label: String, iso: Int }) or Null
 function minYear(termini) {
   const earliest = termini.minBy(getEarliestYear) || null
 

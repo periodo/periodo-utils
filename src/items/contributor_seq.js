@@ -1,5 +1,6 @@
 "use strict";
 
+// Iterable<Contributor> -> Iterable<String>
 function formatContributorList(contributors) {
   const { formatName } = require('./contributor')
 

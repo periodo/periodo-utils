@@ -2,6 +2,13 @@
 
 const Immutable = require('immutable')
 
+// Iterable<Authority> -> List<Period>
+//
+// Get all of the individual periods within the sequence of authorities.
+function getPeriods(collections) {
+  return collections.flatMap(c => c.get('definitions'))
+}
+
 function getSpatialCoverageCounts(periodList) {
   return periodList
     .countBy(period => period.get('spatialCoverage'))
@@ -12,6 +19,7 @@ function getSpatialCoverageCounts(periodList) {
     .toList()
 }
 
+// Iterable<Authority> -> Array<Object({ uses, label })>
 function getSpatialCoverages(collections) {
   return collections
     .flatMap(val => val.get('definitions'))
