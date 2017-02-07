@@ -5,7 +5,7 @@
   "description": "Utilities for working with PeriodO data.",
   "scripts": {
     "repl": "node repl.js",
-    "test": "tape ./tests/*.js",
+    "test": "tape ./src/tests/*.js",
     "build": "babel src --out-dir lib",
     "prepublish": "npm build"
   },
