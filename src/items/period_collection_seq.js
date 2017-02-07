@@ -21,8 +21,7 @@ function getSpatialCoverageCounts(periodList) {
 
 // Iterable<Authority> -> Array<Object({ uses, label })>
 function getSpatialCoverages(collections) {
-  return collections
-    .flatMap(val => val.get('definitions'))
+  return getPeriods(collections)
     .groupBy(val => val.get('spatialCoverageDescription'))
     .filter((val, key) => !!key)
     .map(getSpatialCoverageCounts)
@@ -31,6 +30,7 @@ function getSpatialCoverages(collections) {
 }
 
 module.exports = {
+  getPeriods,
   getSpatialCoverages,
   getSpatialCoverageCounts,
 }
