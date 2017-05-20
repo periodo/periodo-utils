@@ -1,7 +1,7 @@
 "use strict";
 
 const Immutable = require('immutable')
-    , parseDate = require('../dates/parse')
+    , { parse } = require('periodo-date-parser')
 
 
 function oneOf(...candidates) {
@@ -75,7 +75,13 @@ function wasAutoparsed(terminus) {
   }
   */
 
-  const parsed = parseDate(terminus.get('label'));
+  let parsed
+
+  try {
+    parsed = parse(terminus.get('label'))
+  } catch (err) {
+    parsed = null;
+  }
 
   return parsed ?
     Immutable.is(terminus, Immutable.fromJS(parsed).delete('_type')) :
