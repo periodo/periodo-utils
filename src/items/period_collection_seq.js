@@ -1,33 +1,33 @@
 "use strict";
 
-const Immutable = require('immutable')
+const R = require('ramda')
 
 // Iterable<Authority> -> List<Period>
 //
 // Get all of the individual periods within the sequence of authorities.
-function getPeriods(collections) {
-  return collections.flatMap(c => c.get('definitions'))
-}
+const getPeriods = R.chain(R.prop('definitions'))
 
-function getSpatialCoverageCounts(periodList) {
-  return periodList
-    .countBy(period => period.get('spatialCoverage'))
-    .map((count, countries) => Immutable.Map({
-      count,
-      countries: countries ? countries.toOrderedSet() : Immutable.OrderedSet()
-    }))
-    .toList()
-}
+const getSpatialCoverageCounts = R.pipe(
+  R.map(p => p.spatialCoverage.map(
+    R.pipe(R.prop('id'), encodeURIComponent))),
+  R.countBy(R.identity),
+  R.mapObjIndexed((count, countries) => ({
+    count,
+    countries: countries.split(',').map(x => encodeURIComponent(x)),
+  })),
+  R.values()
+)
 
 // Iterable<Authority> -> Array<Object({ uses, label })>
-function getSpatialCoverages(collections) {
-  return getPeriods(collections)
-    .groupBy(val => val.get('spatialCoverageDescription'))
-    .filter((val, key) => !!key)
-    .map(getSpatialCoverageCounts)
-    .map((uses, label) => Immutable.Map({ uses, label }))
-    .toList()
-}
+const getSpatialCoverages = R.pipe(
+  getPeriods,
+  R.groupBy(R.prop('spatialCoverageDescription')),
+  R.pickBy(R.identity),
+  R.map(getSpatialCoverageCounts),
+  R.mapObjIndexed((uses, label) => ({ uses, label })),
+  R.values
+)
+
 
 module.exports = {
   getPeriods,

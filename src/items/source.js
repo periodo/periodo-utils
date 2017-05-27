@@ -1,10 +1,34 @@
 "use strict";
 
-const Immutable = require('immutable')
+const R = require('ramda')
+    , { oneOf } = require('../utils')
+    , { formatContributorList } = require('./contributor_seq')
+
+const getCreators = R.pipe(
+  oneOf(
+    R.prop('creators'),
+    R.path(['partOf', 'creators'])
+  ),
+  x => x || []
+)
+
+const getTitle = oneOf(
+  R.prop('title'),
+  R.prop('citation'),
+  R.path(['partOf', 'title']),
+  R.path(['partOf', 'citation'])
+)
+
+const getYearPublished = R.pipe(
+  oneOf(
+    R.prop('yearPublished'),
+    R.path(['partOf', 'yearPublished'])
+  ),
+  v => v || null
+)
 
 function getDisplayTitle(source) {
-  const { formatContributorList } = require('./contributor_seq')
-      , creators = formatContributorList(getCreators(source))
+  const creators = formatContributorList(getCreators(source))
       , year = getYearPublished(source)
       , title = getTitle(source)
 
@@ -32,30 +56,6 @@ function getDisplayTitle(source) {
   return ret;
 }
 
-function getCreators(source) {
-  return (
-    source.get('creators') ||
-    source.getIn(['partOf', 'creators']) ||
-    Immutable.List()
-  );
-}
-
-function getTitle(source) {
-  return (
-    source.get('title') ||
-    source.get('citation') ||
-    source.getIn(['partOf', 'title']) ||
-    source.getIn(['partOf', 'citation'])
-  )
-}
-
-function getYearPublished(source) {
-  return (
-    source.get('yearPublished') ||
-    source.getIn(['partof', 'yearPublished']) ||
-    null
-  )
-}
 
 module.exports = {
   getDisplayTitle,

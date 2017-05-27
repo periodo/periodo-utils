@@ -1,21 +1,20 @@
 "use strict";
 
-const Immutable = require('immutable')
+const R = require('ramda')
     , { parse } = require('periodo-date-parser')
+    , { oneOf } = require('../utils')
 
-
-function oneOf(...candidates) {
-  for (let i = 0; i < candidates.length; i++) {
-    if (candidates[i] !== undefined) {
-      return candidates[i];
-    }
-  }
+const paths = {
+  earliest: ['in', 'earliestYear'],
+  latest: ['in', 'latestYear'],
+  single: ['in', 'year'],
 }
 
+const isMultiPart = R.any(R.hasIn)([paths.earliest, paths.latest])
 
 // Terminus -> String
 function asString(terminus) {
-  if (terminus.hasIn(['in', 'earliestYear']) || terminus.hasIn(['in', 'latestYear'])) {
+  if (isMultiPart(terminus)) {
     let earliest = getEarliestYear(terminus)
       , latest = getLatestYear(terminus)
 
@@ -35,10 +34,10 @@ function getEarliestYear(terminus) {
   let year
 
   year = oneOf(
-    terminus.getIn(['in', 'year']),
-    terminus.getIn(['in', 'earliestYear']),
-    (terminus.get('label') === 'present' ? (new Date().getFullYear()) : null)
-  )
+    R.path(paths.single),
+    R.path(paths.earliest),
+    t => t.label === 'present' ? (new Date().getFullYear()) : null
+  )(terminus)
 
   if (year === '') year = null;
 
@@ -50,10 +49,10 @@ function getLatestYear(terminus) {
   let year
 
   year = oneOf(
-    terminus.getIn(['in', 'year']),
-    terminus.getIn(['in', 'latestYear']),
-    (terminus.get('label') === 'present' ? (new Date().getFullYear()) : null)
-  )
+    R.path(paths.single),
+    R.path(paths.latest),
+    t => t.label === 'present' ? (new Date().getFullYear()) : null
+  )(terminus)
 
   if (year === '') year = null;
 
@@ -62,7 +61,10 @@ function getLatestYear(terminus) {
 
 // Terminus -> Bool
 function hasISOValue(terminus) {
-  return (getEarliestYear(terminus) !== null || getLatestYear(terminus) !== null)
+  return (
+    getEarliestYear(terminus) !== null ||
+    getLatestYear(terminus) !== null
+  )
 }
 
 // Terminus -> Bool
@@ -78,14 +80,14 @@ function wasAutoparsed(terminus) {
   let parsed
 
   try {
-    parsed = parse(terminus.get('label'))
+    parsed = parse(terminus.label)
   } catch (err) {
     parsed = null;
   }
 
-  return parsed ?
-    Immutable.is(terminus, Immutable.fromJS(parsed).delete('_type')) :
-    terminus.get('in') === null;
+  return parsed
+    ? R.equals(terminus, R.omit(['_type'])(parsed))
+    : terminus.in === null
 }
 
 module.exports = {

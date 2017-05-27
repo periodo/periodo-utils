@@ -1,12 +1,13 @@
 "use strict";
 
+const R = require('ramda')
+    , { formatName } = require('./contributor')
+
 // Iterable<Contributor> -> Iterable<String>
 function formatContributorList(contributors) {
-  const { formatName } = require('./contributor')
-
-  return contributors.size < 3
+  return contributors.length < 3
     ? contributors.map(formatName).join(' and ')
-    : formatName(contributors.first())
+    : formatName(R.head(contributors))
 }
 
 module.exports = {

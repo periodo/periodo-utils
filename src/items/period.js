@@ -1,37 +1,36 @@
 "use strict";
 
-const Immutable = require('immutable')
+const R = require('ramda')
 
+function parseLang(langSpec) {
+  const [ language, script ] = langSpec.split('-')
+
+  return { language, script }
+}
 
 // Period -> String
 function getOriginalLabel(period) {
-  if (!period.get('label') || !period.get('language')) return null;
+  const { label, language } = period
 
-  const value = period.get('label');
-  const [ language, script ] = period.get('language').split('-');
+  if(!label || !language) return null;
 
-  return Immutable.Map({ value, language, script });
+  return Object.assign({ value: label }, parseLang(language))
 }
 
 
 // Period -> OrderedSet<String>
-function getAllLabels(period) {
-  return Immutable.OrderedSet().withMutations(alternateLabels => {
-    period
-      .get('localizedLabels', Immutable.List())
-      .forEach((labels, isoCodes) => {
-        const [ language, script ] = isoCodes.split('-');
-        labels.forEach(value => {
-          alternateLabels.add(Immutable.Map({ value, language, script }));
-        })
-      })
-  })
-}
+const getAllLabels = R.pipe(
+  R.propOr({}, 'localizedLabels'),
+  R.mapObjIndexed((labels, isoCode) => labels.map(label =>
+    Object.assign({ value: label }, parseLang(isoCode)))),
+  R.values,
+  R.unnest
+)
 
 
 // Period -> OrderedSet<String>
 function getAlternateLabels(period) {
-  return getAllLabels(period).remove(getOriginalLabel(period))
+  return R.without([getOriginalLabel(period)], getAllLabels(period))
 }
 
 module.exports = {

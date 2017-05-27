@@ -1,24 +1,37 @@
 "use strict";
 
-const { getEarliestYear, getLatestYear } = require('./terminus')
+const R = require('ramda')
+    , { getEarliestYear, getLatestYear } = require('./terminus')
 
 // Iterable<Terminus> -> Object({ label: String, iso: Int }) or Null
 function maxYear(termini) {
-  const latest = termini.maxBy(getLatestYear) || null
+  const latest = termini.reduce((prev, terminus) => {
+    const iso = getLatestYear(terminus) || -Infinity
 
-  return latest && {
-    label: latest.get('label'),
-    iso: getLatestYear(latest)
+    return iso > prev.iso ? { terminus, iso } : prev
+  }, { terminus: null, iso: -Infinity })
+
+  if (latest.terminus === null) return null;
+
+  return {
+    label: latest.terminus.label,
+    iso: latest.iso
   }
 }
 
 // Iterable<Terminus> -> Object({ label: String, iso: Int }) or Null
 function minYear(termini) {
-  const earliest = termini.minBy(getEarliestYear) || null
+  const earliest = termini.reduce((prev, terminus) => {
+    const iso = getEarliestYear(terminus) || Infinity
 
-  return earliest && {
-    label: earliest.get('label'),
-    iso: getEarliestYear(earliest)
+    return iso < prev.iso ? { terminus, iso } : prev
+  }, { terminus: null, iso: Infinity })
+
+  if (earliest.terminus === null) return null;
+
+  return {
+    label: earliest.terminus.label,
+    iso: earliest.iso
   }
 }
 

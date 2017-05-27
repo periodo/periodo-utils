@@ -3,7 +3,7 @@
 // Contributor -> String
 function formatName(contributor) {
   // TODO: fixme
-  return contributor.get('name');
+  return contributor.name;
 }
 
 module.exports = {

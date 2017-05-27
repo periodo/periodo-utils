@@ -1,20 +1,22 @@
 "use strict";
 
-const Immutable = require('immutable')
+const R = require('ramda')
+    , { minYear, maxYear } = require('./terminus_seq')
+    , { getDisplayTitle } = require('./source')
 
 function describe(periodization) {
   const { minYear, maxYear } = require('./terminus_seq')
-      , definitions = periodization.get('definitions')
-      , starts = definitions.map(def => def.get('start', Immutable.Map()))
-      , stops = definitions.map(def => def.get('stop', Immutable.Map()))
+      , definitions = R.values(periodization.definitions || {})
 
   return {
-    id: periodization.get('id'),
-    source: require('./source').getDisplayTitle(periodization.get('source')),
-    definitions: periodization.get('definitions', { size: 0 }).size,
-    earliest: minYear(starts),
-    latest: maxYear(stops)
+    id: periodization.id,
+    source: getDisplayTitle(periodization.source),
+    definitions: definitions.length,
+    earliest: minYear(R.map(R.path(['start']))(definitions)),
+    latest: maxYear(R.map(R.path(['stop']))(definitions)),
   }
 }
 
-module.exports = { describe }
+module.exports = {
+  describe
+}

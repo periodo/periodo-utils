@@ -1,15 +1,16 @@
 "use strict";
 
+const R = require('ramda')
+
 // Takes a set of Immutable Maps with keys language, script, and value,
 // and returns a Map grouped by language-script code
-function groupByCode(labels) {
-  return labels
-    .groupBy(getCode)
-    .map(labels => labels.map(label => label.get('value')))
-}
+const groupByCode = R.pipe(
+  R.groupBy(getCode),
+  R.map(R.map(R.prop('value')))
+)
 
 function getCode(label) {
-  return `${label.get('language')}-${label.get('script')}`
+  return `${label.language}-${label.script}`
 }
 
 module.exports = {
